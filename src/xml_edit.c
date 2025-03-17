@@ -336,7 +336,7 @@ edInsert(xmlDocPtr doc, xmlNodeSetPtr nodes, const char *val, const char *name,
 
     for (i = 0; i < nodes->nodeNr; i++)
     {
-        xmlNodePtr node;
+        xmlNodePtr node = NULL;
 
         if (nodes->nodeTab[i] == (void*) doc && mode != 0) {
             fprintf(stderr, "The document node cannot have siblings.\n");
