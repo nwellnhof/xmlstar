@@ -350,7 +350,7 @@ foProcess(foOptionsPtr ops, int start, int argc, char **argv)
  *  Cleanup memory
  */
 void
-foCleanup()
+foCleanup(void)
 {
     free(spaces);
     spaces = NULL;

@@ -128,7 +128,7 @@ trParseOptions(xsltOptionsPtr ops, int argc, char **argv)
  *  Cleanup memory
  */
 void
-trCleanup()
+trCleanup(void)
 {
     xsltCleanupGlobals();
     xmlCleanupParser();
