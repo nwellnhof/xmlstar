@@ -178,7 +178,7 @@ elInitOptions(elOptions *ops)
 }
 
 typedef struct {
-    xmlChar **array;
+    const xmlChar **array;
     int offset;
 } ArrayDest;
 
@@ -186,7 +186,7 @@ typedef struct {
  * put @name into @data->array[@data->offset]
  */
 static void
-hash_key_put(void *payload, void *data, xmlChar *name)
+hash_key_put(void *payload, void *data, const xmlChar *name)
 {
     ArrayDest *dest = data;
     dest->array[dest->offset++] = name;
