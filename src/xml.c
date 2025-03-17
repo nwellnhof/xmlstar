@@ -197,6 +197,9 @@ xstrdup(const char *str)
 
 xmlDocPtr
 readXml(const char *filename, int options) {
+#if LIBXML_VERSION >= 21400
+    options |= XML_PARSE_UNZIP;
+#endif
     if (strcmp(filename, "-") == 0)
         return xmlReadFd(/* stdin */ 0, filename, NULL, options);
     else
@@ -205,6 +208,9 @@ readXml(const char *filename, int options) {
 
 xmlDocPtr
 readHtml(const char *filename, int options) {
+#if LIBXML_VERSION >= 21400
+    options |= XML_PARSE_UNZIP;
+#endif
     if (strcmp(filename, "-") == 0)
         return htmlReadFd(/* stdin */ 0, filename, NULL, options);
     else
