@@ -660,7 +660,7 @@ do_file(const char *filename, xmlDocPtr style_tree,
     params[1] = (char *) value;
 
 
-    doc = xmlReadFile(filename, NULL, xml_options);
+    doc = readXml(filename, xml_options);
     if (doc != NULL) {
         xmlDocPtr res;
 

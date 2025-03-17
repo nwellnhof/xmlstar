@@ -54,4 +54,7 @@ int parseNSArr(xmlChar** ns_arr, int* plen, int argc, char **argv);
 void cleanupNSArr(xmlChar **ns_arr);
 extern xmlChar *ns_arr[];
 
+xmlDocPtr readXml(const char *filename, int options);
+xmlDocPtr readHtml(const char *filename, int options);
+
 #endif  /* XMLSTAR_H */

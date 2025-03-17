@@ -34,6 +34,9 @@ THE SOFTWARE.
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <libxml/parser.h>
+#include <libxml/HTMLparser.h>
+
 #include <libxslt/xslt.h>
 #include <libxslt/xsltconfig.h>
 
@@ -192,6 +195,21 @@ xstrdup(const char *str)
     return ret;
 }
 
+xmlDocPtr
+readXml(const char *filename, int options) {
+    if (strcmp(filename, "-") == 0)
+        return xmlReadFd(/* stdin */ 0, filename, NULL, options);
+    else
+        return xmlReadFile(filename, NULL, options);
+}
+
+xmlDocPtr
+readHtml(const char *filename, int options) {
+    if (strcmp(filename, "-") == 0)
+        return htmlReadFd(/* stdin */ 0, filename, NULL, options);
+    else
+        return htmlReadFile(filename, NULL, options);
+}
 
 #ifdef _WIN32
 /* On Windows, it's not really practical to get argv in UTF-8, so we have to do

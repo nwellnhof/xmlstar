@@ -178,7 +178,7 @@ int xsltRun(xsltOptionsPtr ops, char* xsl, const char** params,
     /*
      * Compile XSLT Sylesheet
      */
-    style = xmlReadFile((const char *) xsl, NULL, options);
+    style = readXml(xsl, options);
     if (style == NULL)
     {
         fprintf(stderr,  "cannot parse %s\n", xsl);
@@ -199,7 +199,7 @@ int xsltRun(xsltOptionsPtr ops, char* xsl, const char** params,
             }            
             for (i=0; i<count; i++) 
             {
-                style = xmlReadFile((const char *) docs[i], NULL, options);
+                style = readXml(docs[i], options);
                 if (style == NULL)
                 {
                     fprintf(stderr, "cannot parse %s\n", docs[i]);
@@ -246,11 +246,11 @@ int xsltRun(xsltOptionsPtr ops, char* xsl, const char** params,
         {
             doc = NULL;
 #ifdef LIBXML_HTML_ENABLED
-            if (ops->html) doc = htmlReadFile(docs[i], NULL, options);
+            if (ops->html) doc = readHtml(docs[i], options);
             else
 #endif
             {
-                doc = xmlReadFile((const char *) docs[i], NULL, options);
+                doc = readXml(docs[i], options);
             }
 
             if (doc == NULL)
@@ -267,10 +267,10 @@ int xsltRun(xsltOptionsPtr ops, char* xsl, const char** params,
             /* stdin */
             doc = NULL;
 #ifdef LIBXML_HTML_ENABLED
-            if (ops->html) doc = htmlParseFile("-", NULL);
+            if (ops->html) doc = readHtml("-", options);
             else
 #endif
-                doc = xmlReadFile("-", NULL, options);
+                doc = readXml("-", options);
             xsltProcess(ops, doc, params, cur, "-");
         }
     }
