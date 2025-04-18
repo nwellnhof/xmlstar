@@ -245,8 +245,7 @@ foProcess(foOptionsPtr ops, int start, int argc, char **argv)
 #ifdef LIBXML_HTML_ENABLED
     if (ops->html)
     {
-        doc = readHtml(fileName,
-                       ops->options | XML_PARSE_NOENT | XML_PARSE_NOBLANKS);
+        doc = readHtml(fileName, XML_PARSE_NOBLANKS);
     }
     else
 #endif
