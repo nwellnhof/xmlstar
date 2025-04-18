@@ -277,7 +277,7 @@ foProcess(foOptionsPtr ops, int start, int argc, char **argv)
         save_opts |= XML_SAVE_NO_DECL;
 
     if (ops->indent) {
-        if (ops->indent_tab) 
+        if (ops->indent_tab)
         {
             indent = "\t";
         }
