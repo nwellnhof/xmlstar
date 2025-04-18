@@ -115,19 +115,6 @@ foInitLibXml(foOptionsPtr ops)
 
     LIBXML_TEST_VERSION
 
-    /*
-     * Store line numbers in the document tree
-     */
-    xmlLineNumbersDefault(1);
-
-    xmlSubstituteEntitiesDefault(1);
-    xmlKeepBlanksDefault(0);
-    xmlPedanticParserDefault(0);
-    
-    xmlGetWarningsDefaultValue = 1;
-    xmlDoValidityCheckingDefaultValue = 0;
-    xmlLoadExtDtdDefaultValue = 0;
-
     xmlTreeIndentString = NULL;
     if (ops->indent)
     {
@@ -286,11 +273,13 @@ foProcess(foOptionsPtr ops, int start, int argc, char **argv)
 #ifdef LIBXML_HTML_ENABLED
     if (ops->html)
     {
-        doc = readHtml(fileName, ops->options);
+        doc = readHtml(fileName,
+                       ops->options | XML_PARSE_NOENT | XML_PARSE_NOBLANKS);
     }
     else
 #endif
-        doc = readXml(fileName, ops->options);
+        doc = readXml(fileName,
+                      ops->options | XML_PARSE_NOENT | XML_PARSE_NOBLANKS);
 
     if (doc == NULL)
     {

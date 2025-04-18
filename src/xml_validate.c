@@ -298,7 +298,6 @@ valMain(int argc, char **argv)
 
     errorInfo.verbose = ops.err;
     xmlSetStructuredErrorFunc(&errorInfo, reportError);
-    xmlLineNumbersDefault(1);
 
     if (ops.dtd)
     {

@@ -231,10 +231,10 @@ load_xpath_expr (xmlDocPtr parent_doc, const char* filename) {
     /*
      * load XPath expr as a file
      */
-    xmlLoadExtDtdDefaultValue = XML_DETECT_IDS | XML_COMPLETE_ATTRS;
-    xmlSubstituteEntitiesDefault(1);
-
-    doc = readXml(filename, XML_PARSE_DTDLOAD | XML_PARSE_DTDATTR);
+    doc = readXml(filename,
+                  XML_PARSE_NOENT |
+                  XML_PARSE_DTDLOAD |
+                  XML_PARSE_DTDATTR);
     if (doc == NULL) {
         fprintf(stderr, "Error: unable to parse file \"%s\"\n", filename);
         return(NULL);

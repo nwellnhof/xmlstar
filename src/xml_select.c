@@ -711,6 +711,7 @@ selMain(int argc, char **argv)
     xml_options |= XML_PARSE_NOENT; /* substitute entities */
     xml_options |= XML_PARSE_DTDATTR; /* use default attrib values */
     xml_options |= ops.nonet? XML_PARSE_NONET : 0;
+    xml_options |= ops.noblanks? XML_PARSE_NOBLANKS : 0;
     xsltOps.nonet = ops.nonet;
     xsltOps.noblanks = ops.noblanks;
     xsltInitLibXml(&xsltOps);

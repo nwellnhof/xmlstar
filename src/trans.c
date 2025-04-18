@@ -48,11 +48,6 @@ xsltInitLibXml(xsltOptionsPtr ops)
     LIBXML_TEST_VERSION
 
     /*
-     * Store line numbers in the document tree
-     */
-    xmlLineNumbersDefault(1);
-
-    /*
      * Register the EXSLT extensions
      */
     exsltRegisterAll();
@@ -66,26 +61,6 @@ xsltInitLibXml(xsltOptionsPtr ops)
     {
         xsltDebugDumpExtensions(stderr);
         exit(EXIT_SUCCESS);
-    }
-
-    xmlKeepBlanksDefault(1);
-    if (ops->noblanks)  xmlKeepBlanksDefault(0);
-    xmlPedanticParserDefault(0);
-
-    xmlGetWarningsDefaultValue = 1;
-    /*xmlDoValidityCheckingDefaultValue = 0;*/
-    xmlLoadExtDtdDefaultValue = 1;
-
-    /*
-     * DTD validation options
-     */
-    if (ops->noval == 0)
-    {
-        xmlLoadExtDtdDefaultValue = XML_DETECT_IDS | XML_COMPLETE_ATTRS;
-    }
-    else
-    {
-        xmlLoadExtDtdDefaultValue = 0;
     }
 
 #ifdef LIBXML_XINCLUDE_ENABLED
@@ -174,7 +149,11 @@ int xsltRun(xsltOptionsPtr ops, char* xsl, const char** params,
     int i, options = 0;
 
     options = XSLT_PARSE_OPTIONS;
-     
+    if (ops->noval)
+        options &= ~(XML_PARSE_DTDLOAD | XML_PARSE_DTDATTR);
+    if (ops->noblanks)
+        options |= XML_PARSE_NOBLANKS;
+
     /*
      * Compile XSLT Sylesheet
      */
