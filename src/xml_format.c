@@ -42,6 +42,7 @@ THE SOFTWARE.
 #include <libxml/xpointer.h>
 #include <libxml/parserInternals.h>
 #include <libxml/uri.h>
+#include <libxml/xmlsave.h>
 
 #include "xmlstar.h"
 
@@ -67,7 +68,6 @@ typedef struct _foOptions {
 typedef foOptions *foOptionsPtr;
 
 const char *encoding = NULL;
-static char *spaces = NULL;
 
 /**
  *  Print small help for command line options
@@ -100,32 +100,6 @@ foInitOptions(foOptionsPtr ops)
     ops->html = 0;
 #endif
     ops->quiet = globalOptions.quiet;
-}
-
-/**
- *  Initialize LibXML
- */
-void
-foInitLibXml(foOptionsPtr ops)
-{
-    xmlTreeIndentString = NULL;
-    if (ops->indent)
-    {
-        xmlIndentTreeOutput = 1;
-        if (ops->indent_tab) 
-        {
-            xmlTreeIndentString = "\t";
-        }
-        else if (ops->indent_spaces > 0)
-        {
-            spaces = xmlMalloc(ops->indent_spaces + 1);
-            xmlTreeIndentString = spaces;
-            memset(spaces, ' ', ops->indent_spaces);
-            spaces[ops->indent_spaces] = '\0';
-        }
-    }
-    else
-        xmlIndentTreeOutput = 0;
 }
 
 /**
@@ -246,6 +220,11 @@ foProcess(foOptionsPtr ops, int start, int argc, char **argv)
     int ret = 0;
     xmlDocPtr doc = NULL;
     char *fileName = "-";
+    char *spaces = NULL;
+    const char *indent = NULL;
+    xmlSaveCtxt *save;
+    const char *save_enc;
+    int save_opts;
 
     if ((start > 1) && (start < argc) && (argv[start][0] != '-') &&
         strcmp(argv[start-1], "--indent-spaces") &&
@@ -292,50 +271,55 @@ foProcess(foOptionsPtr ops, int start, int argc, char **argv)
             xmlFreeDtd(dtd);
         }
     }
- 
-    if (!ops->omit_decl)
-    {
-        if (encoding != NULL)
-        {
-            xmlSaveFormatFileEnc("-", doc, encoding, 1);
-        }
-        else
-        {
-            xmlSaveFormatFile("-", doc, 1);
-        }
-    }
-    else
-    {
-        int format = 1;
-        xmlOutputBufferPtr buf = NULL;
-        xmlCharEncodingHandlerPtr handler = NULL;
-        buf = xmlOutputBufferCreateFile(stdout, handler);
 
-        if (doc->children != NULL)
+    save_opts = XML_SAVE_FORMAT;
+    if (ops->omit_decl)
+        save_opts |= XML_SAVE_NO_DECL;
+
+    if (ops->indent) {
+        if (ops->indent_tab) 
         {
-            xmlNodePtr child = doc->children;
-            while (child != NULL)
-            {
-                xmlNodeDumpOutput(buf, doc, child, 0, format, encoding);
-                xmlOutputBufferWriteString(buf, "\n");
-                child = child->next;
-            }
+            indent = "\t";
         }
-        ret = xmlOutputBufferClose(buf);
+        else if (ops->indent_spaces > 0)
+        {
+            spaces = xmlMalloc(ops->indent_spaces + 1);
+            indent = spaces;
+            memset(spaces, ' ', ops->indent_spaces);
+            spaces[ops->indent_spaces] = '\0';
+        }
+#if LIBXML_VERSION >= 21400
+        save_opts |= XML_SAVE_INDENT;
+#else
+        xmlIndentTreeOutput = 1;
+        if (indent != NULL)
+            xmlTreeIndentString = indent;
+#endif
+    } else {
+#if LIBXML_VERSION >= 21400
+        save_opts |= XML_SAVE_NO_INDENT;
+#else
+        xmlIndentTreeOutput = 0;
+#endif
     }
-    
+
+    if (encoding != NULL)
+        save_enc = encoding;
+    else
+        save_enc = (const char *) doc->encoding;
+    save = xmlSaveToFd(/* STDOUT_FILENO */ 1, save_enc, save_opts);
+
+#if LIBXML_VERSION >= 21400
+    if (indent != NULL)
+        xmlSaveSetIndentString(save, indent);
+#endif
+
+    xmlSaveDoc(save, doc);
+    xmlSaveClose(save);
+
+    free(spaces);
     xmlFreeDoc(doc);
     return ret;
-}
-
-/**
- *  Cleanup memory
- */
-void
-foCleanup(void)
-{
-    free(spaces);
-    spaces = NULL;
 }
 
 /**
@@ -352,9 +336,7 @@ foMain(int argc, char **argv)
     foInitOptions(&ops);
     start = foParseOptions(&ops, argc, argv);
     if (argc-start > 1) foUsage(argc, argv, EXIT_BAD_ARGS);
-    foInitLibXml(&ops);
     ret = foProcess(&ops, start, argc, argv);
-    foCleanup();
     
     return ret;
 }
