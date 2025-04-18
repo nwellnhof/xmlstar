@@ -382,6 +382,7 @@ main(int argc, char **argv)
         usage(argc, argv, EXIT_BAD_ARGS);
     }
 
+    xmlCleanupParser();
     exit(ret);
 }
 

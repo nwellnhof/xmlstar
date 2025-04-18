@@ -354,10 +354,6 @@ foCleanup(void)
 {
     free(spaces);
     spaces = NULL;
-    xmlCleanupParser();
-#if 0
-    xmlMemoryDump();
-#endif
 }
 
 /**
