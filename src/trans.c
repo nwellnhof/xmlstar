@@ -134,13 +134,15 @@ int xsltRun(xsltOptionsPtr ops, char* xsl, const char** params,
 {
     xsltStylesheetPtr cur = NULL;
     xmlDocPtr doc, style;
-    int i, options = 0;
+    int i, options = 0, html_opts = 0;
 
     options = XSLT_PARSE_OPTIONS;
     if (ops->noval)
         options &= ~(XML_PARSE_DTDLOAD | XML_PARSE_DTDATTR);
-    if (ops->noblanks)
+    if (ops->noblanks) {
         options |= XML_PARSE_NOBLANKS;
+        html_opts |= XML_PARSE_NOBLANKS;
+    }
 
     /*
      * Compile XSLT Sylesheet
@@ -211,7 +213,7 @@ int xsltRun(xsltOptionsPtr ops, char* xsl, const char** params,
         {
             doc = NULL;
 #ifdef LIBXML_HTML_ENABLED
-            if (ops->html) doc = readHtml(docs[i], options);
+            if (ops->html) doc = readHtml(docs[i], html_opts);
             else
 #endif
             {
@@ -232,7 +234,7 @@ int xsltRun(xsltOptionsPtr ops, char* xsl, const char** params,
             /* stdin */
             doc = NULL;
 #ifdef LIBXML_HTML_ENABLED
-            if (ops->html) doc = readHtml("-", options);
+            if (ops->html) doc = readHtml("-", html_opts);
             else
 #endif
                 doc = readXml("-", options);
