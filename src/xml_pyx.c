@@ -279,7 +279,6 @@ pyxMain(int argc,const char *argv[])
         pyxUsage(argv[0], EXIT_SUCCESS);
     }
 
-    xmlInitParser();
     /* Establish Event Handlers */
     pyxSAX.startElementNs = pyxStartElement;
     pyxSAX.endElementNs = pyxEndElement;

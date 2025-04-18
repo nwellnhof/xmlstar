@@ -315,7 +315,13 @@ main(int argc, char **argv)
 {
     int ret = 0;
 
+    /*
+     * Older libxml2 versions require xmlMemSetup to be called before
+     * xmlInitParser.
+     */
     xmlMemSetup(free, xmalloc, xrealloc, xstrdup);
+
+    xmlInitParser();
 
     gGetUnicodeOptions(argc, argv);
     gInitOptions(&globalOptions);

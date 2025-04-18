@@ -108,13 +108,6 @@ foInitOptions(foOptionsPtr ops)
 void
 foInitLibXml(foOptionsPtr ops)
 {
-    /*
-     * Initialize library memory
-     */
-    xmlInitMemory();
-
-    LIBXML_TEST_VERSION
-
     xmlTreeIndentString = NULL;
     if (ops->indent)
     {
