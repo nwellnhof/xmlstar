@@ -200,7 +200,7 @@ pyxExternalEntityReferenceHandler(void* userData,
 }
 
 static void
-pyxExternalSubsetHandler(void *ctx ATTRIBUTE_UNUSED, const xmlChar *name,
+pyxExternalSubsetHandler(void *ctx, const xmlChar *name,
                          const xmlChar *ExternalID, const xmlChar *SystemID)
 {
     fprintf(stdout, "D %s PUBLIC", name); /* TODO: re-check */
@@ -215,7 +215,7 @@ pyxExternalSubsetHandler(void *ctx ATTRIBUTE_UNUSED, const xmlChar *name,
 }
 
 static void
-pyxCommentHandler(void *ctx ATTRIBUTE_UNUSED, const xmlChar *value)
+pyxCommentHandler(void *ctx, const xmlChar *value)
 {
     fprintf(stdout,"C");
     SanitizeData(value, xmlStrlen(value));
@@ -223,7 +223,7 @@ pyxCommentHandler(void *ctx ATTRIBUTE_UNUSED, const xmlChar *value)
 }
 
 static void
-pyxCdataBlockHandler(void *ctx ATTRIBUTE_UNUSED, const xmlChar *value, int len)
+pyxCdataBlockHandler(void *ctx, const xmlChar *value, int len)
 {
     fprintf(stdout,"[");
     SanitizeData(value, len);
