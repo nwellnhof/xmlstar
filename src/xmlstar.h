@@ -32,7 +32,13 @@ typedef struct _errorInfo {
     ErrorStop stop;
 } ErrorInfo;
 
-void reportError(void *ptr, xmlErrorPtr error);
+#if LIBXML_VERSION >= 21200
+typedef const xmlError xmlConstError;
+#else
+typedef xmlError xmlConstError;
+#endif
+
+void reportError(void *ptr, xmlConstError *error);
 void suppressErrors(void);
 
 typedef struct _gOptions {
